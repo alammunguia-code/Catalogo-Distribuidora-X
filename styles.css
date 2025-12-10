@@ -22,7 +22,23 @@ header h1{font-size:2rem;font-weight:700;}
 
 .container{max-width:1280px;margin:32px auto;padding:0 20px}
 
-/* Grid productos */
+/***********************
+ Barra promo superior
+***********************/
+.promo-bar{
+  background:#10b981;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:700;
+  font-size:1rem;
+  letter-spacing:.3px;
+}
+
+
+/***********************
+ Grid productos
+***********************/
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
 
 .card{
@@ -41,6 +57,23 @@ header h1{font-size:2rem;font-weight:700;}
 .card h3{margin:14px 0 8px;font-size:1.15rem;font-weight:600}
 .price{color:var(--accent);font-weight:700;margin-bottom:12px;font-size:1.1rem}
 
+/***********************
+ Promos bajo el precio
+***********************/
+.deal{
+  font-size:.88rem;
+  color:#d97706;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.deal2{
+  font-size:.82rem;
+  color:#7c3aed;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
 .card .btn{
   background:var(--accent);
   color:#fff;
@@ -54,7 +87,10 @@ header h1{font-size:2rem;font-weight:700;}
 }
 .card .btn:hover{background:var(--accent-dark)}
 
-/* Carrito icono */
+
+/***********************
+ Icono carrito
+***********************/
 #cart-btn{
   position:fixed;right:24px;bottom:24px;
   background:var(--accent);
@@ -67,7 +103,10 @@ header h1{font-size:2rem;font-weight:700;}
 #cart-btn:hover{transform:scale(1.07)}
 #cart-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
 
-/* Panel lateral */
+
+/***********************
+ Panel lateral carrito
+***********************/
 .cart-panel{
   position:fixed;right:0;top:0;height:100vh;width:420px;max-width:95vw;
   background:var(--card);
