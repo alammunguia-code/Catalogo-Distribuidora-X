@@ -4,7 +4,7 @@
 const SHEET_ID = '1ZYDo3phbc-IhaD-blVlaH7gbYkoyjhhX-I7Dtm06Cuo'; 
 const params = new URLSearchParams(window.location.search);
 const catalogoSeleccionado = params.get('catalogo') || 'Mayoreo';
-const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${catalogoSeleccionado}`;
+const SHEET_URL = `https://opensheet.elk.sh/${1ZYDo3phbc-IhaD-blVlaH7gbYkoyjhhX-I7Dtm06Cuo}/${catalogoSeleccionado}`;
 
 /****************************************************
  * CONFIGURACIÓN GOOGLE FORMS
@@ -251,4 +251,5 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
   renderCart();
 });
+
 
