@@ -10,7 +10,7 @@ const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/${catalogoSeleccionado}`
  * CONFIGURACIÓN GOOGLE FORMS
  ****************************************************/
 const FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSe4qzkJIvgWWS0OhKrrOu2BJbuaHRNR5skoWoFQW3Sv-3430Q/formResponse";
+  'https://docs.google.com/forms/d/e/1FAIpQLSe4qzkJIvgWWS0OhKrrOu2BJbuaHRNR5skoWoFQW3Sv-3430Q/formResponse';
 
 const ENTRY = {
   nombre: 'entry.313556667',
@@ -28,7 +28,7 @@ let productos = [];
 let carrito = JSON.parse(localStorage.getItem('amat_carrito_v1') || '[]');
 
 /****************************************************
- * DOM
+ * DOM READY
  ****************************************************/
 document.addEventListener('DOMContentLoaded', () => {
   const catalogoEl = document.getElementById('catalogo');
@@ -42,11 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('submit-order');
 
   /****************************************************
-   * CARGAR PRODUCTOS
+   * CARGAR PRODUCTOS DESDE GOOGLE SHEETS
    ****************************************************/
   async function cargarProductos() {
     try {
       const res = await fetch(SHEET_URL);
+      if (!res.ok) throw new Error('Error al cargar Sheet');
+
       const data = await res.json();
 
       productos = data.map(row => ({
@@ -55,13 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
         precio: Number(row.precio),
         precioMayoreo: Number(row.precio_mayoreo),
         minMayoreo: Number(row.minimo_mayoreo),
-        colores: row.colores.split(',').map(c => c.trim()),
+
+        // 🔐 Protegido contra errores
+        colores: row.colores
+          ? row.colores.split(',').map(c => c.trim())
+          : ['Único'],
+
         imagen: row.imagen
       }));
 
       renderProductos();
     } catch (err) {
-      console.error(err);
+      console.error('Error cargando productos:', err);
       alert('No se pudieron cargar los productos');
     }
   }
@@ -73,24 +80,32 @@ document.addEventListener('DOMContentLoaded', () => {
     catalogoEl.innerHTML = '';
 
     productos.forEach((p, i) => {
-      const opcionesColores = p.colores
-        .map(c => `<option value="${c}">${c}</option>`)
-        .join('');
-
       const card = document.createElement('article');
       card.className = 'card';
+
+      const colorSelect =
+        p.colores.length > 1
+          ? `
+          <select class="color-select" data-index="${i}">
+            ${p.colores
+              .map(color => `<option value="${color}">${color}</option>`)
+              .join('')}
+          </select>
+        `
+          : `<div style="font-size:13px;color:#6b7280;margin-bottom:6px">
+              Color: ${p.colores[0]}
+            </div>`;
+
       card.innerHTML = `
         <img src="${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
         <div class="price">$${p.precio} MXN</div>
 
-        <select class="color-select" data-index="${i}">
-          ${opcionesColores}
-        </select>
-
-        <div style="font-size:13px;color:#16a34a;margin:8px 0">
+        <div style="font-size:13px;color:#16a34a;margin-bottom:8px">
           Mayoreo: $${p.precioMayoreo} desde ${p.minMayoreo} pzas
         </div>
+
+        ${colorSelect}
 
         <button class="btn" data-index="${i}">Agregar al carrito</button>
       `;
@@ -107,9 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateBadge() {
-    const totalItems = carrito.reduce((s, i) => s + i.cantidad, 0);
-    cartBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-    cartBadge.textContent = totalItems;
+    const cantidad = carrito.reduce((s, i) => s + i.cantidad, 0);
+    cartBadge.style.display = cantidad > 0 ? 'flex' : 'none';
+    cartBadge.textContent = cantidad;
   }
 
   function renderCart() {
@@ -123,19 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    let total = 0;
-
     carrito.forEach((item, index) => {
       const precioUnit =
         item.cantidad >= item.minMayoreo
           ? item.precioMayoreo
           : item.precio;
 
-      total += precioUnit * item.cantidad;
+      const node = document.createElement('div');
+      node.className = 'cart-item';
 
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerHTML = `
+      node.innerHTML = `
         <img src="${item.imagen}">
         <div class="meta">
           <b>${item.nombre} (${item.color})</b>
@@ -144,55 +156,58 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <div>
-          <input class="qty" type="number" min="1" value="${item.cantidad}" data-index="${index}">
+          <input class="qty" type="number" min="1"
+            value="${item.cantidad}" data-index="${index}">
           <button class="small-btn" data-remove="${index}">Eliminar</button>
         </div>
       `;
-      cartBody.appendChild(div);
+
+      cartBody.appendChild(node);
     });
+
+    const total = carrito.reduce((s, i) => {
+      const precio =
+        i.cantidad >= i.minMayoreo ? i.precioMayoreo : i.precio;
+      return s + precio * i.cantidad;
+    }, 0);
 
     cartTotalEl.textContent = total;
     updateBadge();
   }
 
   /****************************************************
-   * AGREGAR AL CARRITO
+   * EVENTOS CATÁLOGO
    ****************************************************/
   catalogoEl.addEventListener('click', e => {
     const btn = e.target.closest('button[data-index]');
     if (!btn) return;
 
     const idx = Number(btn.dataset.index);
-    const producto = productos[idx];
-    const selectColor = document.querySelector(`select[data-index="${idx}"]`);
-    const colorSeleccionado = selectColor.value;
+    const p = productos[idx];
 
-    const existente = carrito.find(
-      i => i.id === producto.id && i.color === colorSeleccionado
+    const select = document.querySelector(
+      `.color-select[data-index="${idx}"]`
+    );
+    const color = select ? select.value : p.colores[0];
+
+    const existing = carrito.find(
+      x => x.id === p.id && x.color === color
     );
 
-    if (existente) {
-      existente.cantidad++;
-    } else {
-      carrito.push({
-        ...producto,
-        color: colorSeleccionado,
-        cantidad: 1
-      });
-    }
+    if (existing) existing.cantidad++;
+    else carrito.push({ ...p, color, cantidad: 1 });
 
     saveCart();
     renderCart();
   });
 
-  /****************************************************
-   * EVENTOS CARRITO
-   ****************************************************/
   cartBody.addEventListener('change', e => {
-    const input = e.target.closest('.qty');
+    const input = e.target.closest('input.qty');
     if (!input) return;
 
-    carrito[input.dataset.index].cantidad = parseInt(input.value) || 1;
+    carrito[Number(input.dataset.index)].cantidad =
+      parseInt(input.value) || 1;
+
     saveCart();
     renderCart();
   });
@@ -201,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rm = e.target.closest('button[data-remove]');
     if (!rm) return;
 
-    carrito.splice(rm.dataset.remove, 1);
+    carrito.splice(Number(rm.dataset.remove), 1);
     saveCart();
     renderCart();
   });
@@ -213,14 +228,15 @@ document.addEventListener('DOMContentLoaded', () => {
     cartPanel.classList.add('open');
     overlay.classList.add('show');
   }
-
   function closeCartPanel() {
     cartPanel.classList.remove('open');
     overlay.classList.remove('show');
   }
 
   cartBtn.addEventListener('click', () =>
-    cartPanel.classList.contains('open') ? closeCartPanel() : openCart()
+    cartPanel.classList.contains('open')
+      ? closeCartPanel()
+      : openCart()
   );
   closeCart.addEventListener('click', closeCartPanel);
   overlay.addEventListener('click', closeCartPanel);
@@ -229,44 +245,52 @@ document.addEventListener('DOMContentLoaded', () => {
    * ENVIAR PEDIDO
    ****************************************************/
   submitBtn.addEventListener('click', () => {
-    if (carrito.length === 0) return alert('Carrito vacío');
+    if (carrito.length === 0)
+      return alert('El carrito está vacío');
 
-    const nombre = nombreInput.value.trim();
-    const telefono = telefonoInput.value.trim();
-    const direccion = direccionInput.value.trim();
-    const email = emailInput.value.trim();
+    const nombre = document.getElementById('nombre').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const email = document.getElementById('email').value.trim();
 
     if (!nombre || !telefono || !direccion || !email)
       return alert('Completa tus datos');
 
-    const pedido = carrito
-      .map(i => `${i.nombre} (${i.color}) x${i.cantidad}`)
+    const pedidoTexto = carrito
+      .map(
+        i =>
+          `${i.nombre} (${i.color}) x${i.cantidad} = $${
+            (i.cantidad >= i.minMayoreo
+              ? i.precioMayoreo
+              : i.precio) * i.cantidad
+          }`
+      )
       .join('\n');
+
+    const total = cartTotalEl.textContent;
 
     const fd = new FormData();
     fd.append(ENTRY.nombre, nombre);
     fd.append(ENTRY.telefono, telefono);
     fd.append(ENTRY.direccion, direccion);
     fd.append(ENTRY.email, email);
-    fd.append(ENTRY.pedido, pedido);
-    fd.append(ENTRY.total, cartTotalEl.textContent);
+    fd.append(ENTRY.pedido, pedidoTexto);
+    fd.append(ENTRY.total, total);
 
     fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
       .then(() => {
-        alert('Pedido enviado');
+        alert('Pedido enviado con éxito');
         carrito = [];
         saveCart();
         renderCart();
         closeCartPanel();
-      });
+      })
+      .catch(() => alert('Error al enviar pedido'));
   });
 
   /****************************************************
-   * INIT
+   * INICIALIZAR
    ****************************************************/
   cargarProductos();
   renderCart();
 });
-
-
-
