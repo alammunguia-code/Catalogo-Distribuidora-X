@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (carrito.length === 0) {
       cartBody.innerHTML =
         '<div style="padding:18px;color:#6b7280">Tu carrito está vacío</div>';
-      cartTotalEl.textContent = '0';
+     cartTotalEl.textContent = total.toFixed(2);
       updateBadge();
       return;
     }
@@ -294,3 +294,4 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
   renderCart();
 });
+
