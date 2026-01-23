@@ -25,7 +25,9 @@ const ENTRY = {
  * VARIABLES GLOBALES
  ****************************************************/
 let productos = [];
+let productosFiltrados = [];
 let carrito = JSON.parse(localStorage.getItem('amat_carrito_v1') || '[]');
+let categoriaActual = 'Todos';
 
 /****************************************************
  * DOM READY
@@ -40,9 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartTotalEl = document.getElementById('cart-total');
   const closeCart = document.getElementById('close-cart');
   const submitBtn = document.getElementById('submit-order');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('search-input');
 
   /****************************************************
-   * CARGAR PRODUCTOS DESDE GOOGLE SHEETS
+   * CARGAR PRODUCTOS
    ****************************************************/
   async function cargarProductos() {
     try {
@@ -54,68 +58,100 @@ document.addEventListener('DOMContentLoaded', () => {
       productos = data.map(row => ({
         id: Number(row.id),
         nombre: row.nombre,
-        precio: Number(row.precio),
-        precioMayoreo: Number(row.precio_mayoreo),
-        minMayoreo: Number(row.minimo_mayoreo),
-
-        // 🔐 Protegido contra errores
+        categoria: row.categoria || 'Otros',
+        precio: Number(row.precio) || 0,
+        precioMayoreo: Number(row.precio_mayoreo) || 0,
+        minMayoreo: Number(row.minimo_mayoreo) || 0,
         colores: row.colores
           ? row.colores.split(',').map(c => c.trim())
           : ['Único'],
-
         imagen: row.imagen
       }));
 
+      productosFiltrados = [...productos];
       renderProductos();
     } catch (err) {
-      console.error('Error cargando productos:', err);
+      console.error(err);
       alert('No se pudieron cargar los productos');
     }
   }
 
   /****************************************************
-   * RENDER CATÁLOGO
+   * RENDER PRODUCTOS
    ****************************************************/
-function renderProductos() {
-  catalogoEl.innerHTML = '';
+  function renderProductos() {
+    catalogoEl.innerHTML = '';
 
-  productos.forEach((p, i) => {
-    const card = document.createElement('article');
-    card.className = 'card';
-
-    // Mostrar selector SOLO si hay más de un color
-    let colorHTML = '';
-    if (p.colores.length > 1) {
-      colorHTML = `
-        <select class="color-select" data-index="${i}">
-          ${p.colores
-            .map(color => `<option value="${color}">${color}</option>`)
-            .join('')}
-        </select>
-      `;
+    if (productosFiltrados.length === 0) {
+      catalogoEl.innerHTML =
+        '<p style="padding:20px;color:#6b7280">No hay productos</p>';
+      return;
     }
 
-    card.innerHTML = `
-      <img src="${p.imagen}" alt="${p.nombre}">
-      <h3>${p.nombre}</h3>
+    productosFiltrados.forEach((p, i) => {
+      const card = document.createElement('article');
+      card.className = 'card';
 
-      <div class="price">$${p.precio.toFixed(2)} MXN</div>
+      let colorHTML = '';
+      if (p.colores.length > 1) {
+        colorHTML = `
+          <select class="color-select" data-id="${p.id}">
+            ${p.colores.map(c => `<option>${c}</option>`).join('')}
+          </select>
+        `;
+      }
 
-      <div style="font-size:13px;color:#16a34a;margin-bottom:8px">
-        Mayoreo: $${p.precioMayoreo.toFixed(2)} desde ${p.minMayoreo} pzas
-      </div>
+      card.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}">
+        <h3>${p.nombre}</h3>
 
-      ${colorHTML}
+        <div class="price">$${p.precio.toFixed(2)} MXN</div>
 
-      <button class="btn" data-index="${i}">
-        Agregar al carrito
-      </button>
-    `;
+        <div style="font-size:13px;color:#16a34a;margin-bottom:8px">
+          Mayoreo: $${p.precioMayoreo.toFixed(2)} desde ${p.minMayoreo} pzas
+        </div>
 
-    catalogoEl.appendChild(card);
+        ${colorHTML}
+
+        <button class="btn" data-id="${p.id}">
+          Agregar al carrito
+        </button>
+      `;
+
+      catalogoEl.appendChild(card);
+    });
+  }
+
+  /****************************************************
+   * FILTROS Y BUSCADOR
+   ****************************************************/
+  function aplicarFiltros() {
+    const texto = searchInput.value.toLowerCase();
+
+    productosFiltrados = productos.filter(p => {
+      const matchCategoria =
+        categoriaActual === 'Todos' || p.categoria === categoriaActual;
+
+      const matchTexto = p.nombre.toLowerCase().includes(texto);
+
+      return matchCategoria && matchTexto;
+    });
+
+    renderProductos();
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      categoriaActual = btn.dataset.filter;
+      aplicarFiltros();
+    });
   });
-}
 
+  if (searchInput) {
+    searchInput.addEventListener('input', aplicarFiltros);
+  }
 
   /****************************************************
    * CARRITO
@@ -136,7 +172,7 @@ function renderProductos() {
     if (carrito.length === 0) {
       cartBody.innerHTML =
         '<div style="padding:18px;color:#6b7280">Tu carrito está vacío</div>';
-     cartTotalEl.textContent = total.toFixed(2);
+      cartTotalEl.textContent = '0.00';
       updateBadge();
       return;
     }
@@ -155,7 +191,7 @@ function renderProductos() {
         <div class="meta">
           <b>${item.nombre} (${item.color})</b>
           <div style="font-size:13px;color:#6b7280">
-            $${precioUnit} MXN c/u
+            $${precioUnit.toFixed(2)} MXN c/u
           </div>
         </div>
         <div>
@@ -174,7 +210,7 @@ function renderProductos() {
       return s + precio * i.cantidad;
     }, 0);
 
-    cartTotalEl.textContent = total;
+    cartTotalEl.textContent = total.toFixed(2);
     updateBadge();
   }
 
@@ -182,15 +218,13 @@ function renderProductos() {
    * EVENTOS CATÁLOGO
    ****************************************************/
   catalogoEl.addEventListener('click', e => {
-    const btn = e.target.closest('button[data-index]');
+    const btn = e.target.closest('button[data-id]');
     if (!btn) return;
 
-    const idx = Number(btn.dataset.index);
-    const p = productos[idx];
+    const id = Number(btn.dataset.id);
+    const p = productos.find(x => x.id === id);
 
-    const select = document.querySelector(
-      `.color-select[data-index="${idx}"]`
-    );
+    const select = document.querySelector(`.color-select[data-id="${id}"]`);
     const color = select ? select.value : p.colores[0];
 
     const existing = carrito.find(
@@ -208,7 +242,7 @@ function renderProductos() {
     const input = e.target.closest('input.qty');
     if (!input) return;
 
-    carrito[Number(input.dataset.index)].cantidad =
+    carrito[input.dataset.index].cantidad =
       parseInt(input.value) || 1;
 
     saveCart();
@@ -231,6 +265,7 @@ function renderProductos() {
     cartPanel.classList.add('open');
     overlay.classList.add('show');
   }
+
   function closeCartPanel() {
     cartPanel.classList.remove('open');
     overlay.classList.remove('show');
@@ -262,15 +297,13 @@ function renderProductos() {
     const pedidoTexto = carrito
       .map(
         i =>
-          `${i.nombre} (${i.color}) x${i.cantidad} = $${
+          `${i.nombre} (${i.color}) x${i.cantidad} = $${(
             (i.cantidad >= i.minMayoreo
               ? i.precioMayoreo
               : i.precio) * i.cantidad
-          }`
+          ).toFixed(2)}`
       )
       .join('\n');
-
-    const total = cartTotalEl.textContent;
 
     const fd = new FormData();
     fd.append(ENTRY.nombre, nombre);
@@ -278,7 +311,7 @@ function renderProductos() {
     fd.append(ENTRY.direccion, direccion);
     fd.append(ENTRY.email, email);
     fd.append(ENTRY.pedido, pedidoTexto);
-    fd.append(ENTRY.total, total);
+    fd.append(ENTRY.total, cartTotalEl.textContent);
 
     fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
       .then(() => {
@@ -292,7 +325,7 @@ function renderProductos() {
   });
 
   /****************************************************
-   * INICIALIZAR
+   * INIT
    ****************************************************/
   cargarProductos();
   renderCart();
