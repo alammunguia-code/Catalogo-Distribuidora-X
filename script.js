@@ -36,17 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
   async function cargarProductos() {
     try {
       const res = await fetch(SHEET_URL);
+      if (!res.ok) throw new Error('Error Sheet');
+
       const data = await res.json();
 
       productos = data.map(row => ({
-        id: row.id,
-        nombre: row.nombre || '',
-        categoria: row.categoria || 'Sin categoría',
+        id: row.id || crypto.randomUUID(),
+        nombre: row.nombre ? String(row.nombre) : '',
+        categoria: row.categoria ? String(row.categoria) : 'Sin categoría',
         precio: Number(row.precio) || 0,
         precioMayoreo: Number(row.precio_mayoreo) || 0,
         minMayoreo: Number(row.minimo_mayoreo) || 0,
         colores: row.colores
-          ? row.colores.split(',').map(c => c.trim())
+          ? String(row.colores).split(',').map(c => c.trim())
           : ['Único'],
         imagen: row.imagen || ''
       }));
@@ -64,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
    * CATEGORÍAS AUTOMÁTICAS
    ****************************************************/
   function generarCategorias() {
+    if (!filtersEl) return;
+
     filtersEl.innerHTML = '';
 
     const categorias = [
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document
           .querySelectorAll('.filter-btn')
           .forEach(b => b.classList.remove('active'));
+
         btn.classList.add('active');
         categoriaActiva = cat;
         renderProductos();
@@ -91,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /****************************************************
-   * RENDER PRODUCTOS
+   * RENDER PRODUCTOS (BLINDADO)
    ****************************************************/
   function renderProductos() {
     catalogoEl.innerHTML = '';
@@ -101,8 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
         categoriaActiva === 'Todos' ||
         p.categoria === categoriaActiva;
 
-      const okBusqueda =
-        p.nombre.toLowerCase().includes(textoBusqueda.toLowerCase());
+      const nombre = (p.nombre || '').toLowerCase();
+      const busqueda = (textoBusqueda || '').toLowerCase();
+      const okBusqueda = nombre.includes(busqueda);
 
       return okCategoria && okBusqueda;
     });
@@ -117,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'card';
 
       let colorHTML = '';
-      if (p.colores.length > 1) {
+      if (Array.isArray(p.colores) && p.colores.length > 1) {
         colorHTML = `
           <select class="color-select">
             ${p.colores.map(c => `<option>${c}</option>`).join('')}
@@ -164,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCart() {
     cartBody.innerHTML = '';
-
     let total = 0;
 
     carrito.forEach((item, i) => {
@@ -183,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       div.querySelector('input').onchange = e => {
-        item.cantidad = Number(e.target.value);
+        item.cantidad = Number(e.target.value) || 1;
         saveCart();
         renderCart();
       };
@@ -198,28 +203,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     cartTotalEl.textContent = total.toFixed(2);
-    cartBadge.textContent = carrito.reduce((s, i) => s + i.cantidad, 0);
+    cartBadge.textContent = carrito.reduce(
+      (s, i) => s + i.cantidad,
+      0
+    );
   }
 
   /****************************************************
-   * BUSCADOR
+   * BUSCADOR (SEGURO)
    ****************************************************/
-  searchEl.addEventListener('input', e => {
-    textoBusqueda = e.target.value;
-    renderProductos();
-  });
+  if (searchEl) {
+    searchEl.addEventListener('input', e => {
+      textoBusqueda = e.target.value || '';
+      renderProductos();
+    });
+  }
 
   /****************************************************
    * CARRITO UI
    ****************************************************/
-  cartBtn.onclick = () => {
-    cartPanel.classList.add('open');
-    overlay.classList.add('show');
-  };
-  overlay.onclick = () => {
-    cartPanel.classList.remove('open');
-    overlay.classList.remove('show');
-  };
+  if (cartBtn && overlay) {
+    cartBtn.onclick = () => {
+      cartPanel.classList.add('open');
+      overlay.classList.add('show');
+    };
+
+    overlay.onclick = () => {
+      cartPanel.classList.remove('open');
+      overlay.classList.remove('show');
+    };
+  }
 
   cargarProductos();
 });
+
