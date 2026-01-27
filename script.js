@@ -154,11 +154,8 @@ function renderProductos(lista = productos) {
     <button class="btn" data-id="${escapeHtml(p.id)}">Agregar al carrito</button>
   </div>
 `;
-
 catalogoEl.appendChild(card);
-
-}
-
+    
 // --- Carrusel: manejar flechas ---
 document.addEventListener('click', e => {
   const prevBtn = e.target.closest('.carousel-btn.prev');
@@ -419,6 +416,7 @@ document.addEventListener('click', e => {
   renderCart();
   cargarProductos();
 });
+
 
 
 
