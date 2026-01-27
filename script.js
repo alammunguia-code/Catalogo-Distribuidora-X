@@ -97,6 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /****************************************************
    * RENDER CATÁLOGO (acepta lista opcional)
    ****************************************************/
+/****************************************************
+ * RENDER CATÁLOGO (acepta lista opcional)
+ ****************************************************/
 function renderProductos(lista = productos) {
   if (!catalogoEl) return;
   catalogoEl.innerHTML = '';
@@ -111,7 +114,6 @@ function renderProductos(lista = productos) {
     card.className = 'card';
 
     let colorHTML = '';
-    // Mostrar selector solo si hay más de 1 color
     if (Array.isArray(p.colores) && p.colores.length > 1) {
       colorHTML = `
         <select class="color-select" data-id="${escapeHtml(p.id)}">
@@ -120,7 +122,6 @@ function renderProductos(lista = productos) {
       `;
     }
 
-    // Carrusel: si hay varias imágenes
     let imagenHTML = '';
     if (Array.isArray(p.imagenes) && p.imagenes.length > 1) {
       const imgs = p.imagenes.map((img, idx) =>
@@ -139,25 +140,29 @@ function renderProductos(lista = productos) {
     }
 
     card.innerHTML = `
-  <div class="card-image">
-    ${imagenHTML}
-  </div>
-  <div class="card-info">
-    <h3>${escapeHtml(p.nombre)}</h3>
-    <div class="price">$${Number(p.precio).toFixed(2)} MXN</div>
-    <div class="mayoreo">
-      Mayoreo: $${Number(p.precioMayoreo).toFixed(2)} desde ${p.minMayoreo} pzas
-    </div>
-  </div>
-  <div class="card-actions">
-    ${colorHTML}
-    <button class="btn" data-id="${escapeHtml(p.id)}">Agregar al carrito</button>
-  </div>
-`;
-catalogoEl.appendChild(card);
-    }); 
-}
-// --- Carrusel: manejar flechas ---
+      <div class="card-image">
+        ${imagenHTML}
+      </div>
+      <div class="card-info">
+        <h3>${escapeHtml(p.nombre)}</h3>
+        <div class="price">$${Number(p.precio).toFixed(2)} MXN</div>
+        <div class="mayoreo">
+          Mayoreo: $${Number(p.precioMayoreo).toFixed(2)} desde ${p.minMayoreo} pzas
+        </div>
+      </div>
+      <div class="card-actions">
+        ${colorHTML}
+        <button class="btn" data-id="${escapeHtml(p.id)}">Agregar al carrito</button>
+      </div>
+    `;
+
+    catalogoEl.appendChild(card);
+  }); // cierre del forEach
+} // cierre de la función renderProductos
+
+/****************************************************
+ * CARRUSEL: manejar flechas
+ ****************************************************/
 document.addEventListener('click', e => {
   const prevBtn = e.target.closest('.carousel-btn.prev');
   const nextBtn = e.target.closest('.carousel-btn.next');
@@ -175,7 +180,6 @@ document.addEventListener('click', e => {
     imgs[current].classList.add('active');
   }
 });
-
 
 
   /****************************************************
@@ -417,6 +421,7 @@ document.addEventListener('click', e => {
   renderCart();
   cargarProductos();
 });
+
 
 
 
