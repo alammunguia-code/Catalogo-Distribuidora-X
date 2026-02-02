@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * BOTONES DE CATEGORÍA AUTOMÁTICOS
  ****************************************************/
 function renderCategoryButtons() {
+  console.log("Renderizando categorías…", productos.map(p => p.categoria));
   const container = document.getElementById('category-buttons');
   if (!container) return;
 
@@ -429,6 +430,7 @@ renderCart();
 cargarProductos().then(() => {
   renderCategoryButtons(); // genera los botones de categoría dinámicamente
 });
+
 
 
 
