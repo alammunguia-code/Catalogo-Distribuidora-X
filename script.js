@@ -420,13 +420,16 @@ document.addEventListener('click', e => {
         .catch(() => alert('Error al enviar pedido'));
     });
   }
-
-  /****************************************************
-   * INIT
-   ****************************************************/
-  renderCart();
-  cargarProductos();
+  
+/****************************************************
+ * INIT
+ ****************************************************/
+renderCart();
+cargarProductos().then(() => {
+  renderCategoryButtons(); // genera los botones de categoría dinámicamente
 });
+
+
 
 
 
