@@ -81,7 +81,7 @@ header h1 {
   align-items: center;
   text-align: center;
 
-  min-height: 440px; /* 🔑 cards parejas */
+  min-height: 440px;
   transition: transform .2s, box-shadow .2s;
 }
 
@@ -91,12 +91,12 @@ header h1 {
 }
 
 /* ===============================
-   CONTENEDOR DE IMAGEN (NORMALIZADO)
+   CONTENEDOR DE IMAGEN
    =============================== */
 .card-image {
   position: relative;
   width: 100%;
-  height: 220px;              
+  aspect-ratio: 1 / 1; /* 🔑 TODAS LAS IMÁGENES PAREJAS */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,15 +110,14 @@ header h1 {
    =============================== */
 .card-image img,
 .card-image .carousel-img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 🔑 no recorta verticales */
   cursor: zoom-in;
-  transition: transform 0.15s ease, transform-origin 0.05s ease;
+
+  transition: transform 0.18s ease;
   transform-origin: center center;
+  will-change: transform;
 }
 
 /* ===============================
@@ -130,7 +129,7 @@ header h1 {
 }
 
 /* ===============================
-   DESACTIVAR ZOOM EN MÓVIL
+   DESACTIVAR ZOOM EN TOUCH
    =============================== */
 @media (hover: none) {
   .card-image img,
@@ -163,17 +162,10 @@ header h1 {
   font-size: 1.05rem;
 }
 
-.deal {
-  font-size: .88rem;
-  color: #d97706;
+.mayoreo {
+  font-size: .85rem;
+  color: #64748b;
   font-weight: 600;
-}
-
-.deal2 {
-  font-size: .82rem;
-  color: #7c3aed;
-  font-weight: 600;
-  margin-bottom: 6px;
 }
 
 /* ===============================
@@ -220,9 +212,8 @@ header h1 {
 }
 
 .carousel-track {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .carousel-img {
@@ -245,6 +236,7 @@ header h1 {
   height: 36px;
   border-radius: 50%;
   cursor: pointer;
+  z-index: 2;
 }
 
 .carousel-btn.prev { left: 8px; }
@@ -280,16 +272,6 @@ header h1 {
   border-color: var(--accent);
 }
 
-.search-bar { ... }
-.search-input-wrap { ... }
-.search-input-wrap:focus-within { ... }
-.search-icon { ... }
-#search { ... }
-.clear-btn { ... }
-.clear-btn:hover { ... }
-
-}
-
 /* ===============================
    RESPONSIVE
    =============================== */
@@ -298,5 +280,4 @@ header h1 {
   .card h3 { font-size: 1rem; }
   .price { font-size: 1rem; }
 }
-
 
