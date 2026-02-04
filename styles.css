@@ -424,6 +424,68 @@ button:focus,
   gap: 8px;
   margin-top: auto; /* empuja al fondo */
 }
+/* ===============================
+   ZOOM DE IMÁGENES EN PRODUCTOS
+   =============================== */
+
+/* Contenedor de la imagen */
+.card-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px; /* se ve más pro */
+}
+
+/* Imagen normal y del carrusel */
+.card-image img,
+.card-image .carousel-img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.35s ease;
+  cursor: zoom-in;
+}
+
+/* Solo hace zoom a la imagen activa del carrusel */
+.card-image:hover img,
+.card-image:hover .carousel-img.active {
+  transform: scale(1.6);
+}
+
+/* Evita que en móvil haga cosas raras */
+@media (hover: none) {
+  .card-image:hover img,
+  .card-image:hover .carousel-img {
+    transform: none;
+  }
+}
+
+/* ===============================
+   EXTRA OPCIONAL (recomendado)
+   Mejora visual del carrusel
+   =============================== */
+
+.carousel {
+  position: relative;
+}
+
+.carousel-track {
+  overflow: hidden;
+}
+
+.carousel-btn {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: none;
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
 
 
 
