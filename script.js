@@ -388,3 +388,42 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   cargarProductos();
 });
+/****************************************************
+ * ZOOM QUE SIGUE AL CURSOR
+ ****************************************************/
+document.addEventListener('mousemove', e => {
+  const cardImage = e.target.closest('.card-image');
+  if (!cardImage) return;
+
+  const img =
+    cardImage.querySelector('img.carousel-img.active') ||
+    cardImage.querySelector('img');
+
+  if (!img) return;
+
+  const rect = cardImage.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 100;
+  const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+  img.style.transformOrigin = `${x}% ${y}%`;
+});
+
+document.addEventListener('mouseenter', e => {
+  const cardImage = e.target.closest('.card-image');
+  if (cardImage) cardImage.classList.add('zoom-active');
+}, true);
+
+document.addEventListener('mouseleave', e => {
+  const cardImage = e.target.closest('.card-image');
+  if (cardImage) {
+    cardImage.classList.remove('zoom-active');
+
+    const img =
+      cardImage.querySelector('img.carousel-img.active') ||
+      cardImage.querySelector('img');
+
+    if (img) img.style.transformOrigin = 'center center';
+  }
+}, true);
+
+
