@@ -436,34 +436,44 @@ button:focus,
 /* ===================================================
    INFORMACIÓN Y ACCIONES (Corregido para Espejo)
    =================================================== */
-/* 1. La caja de info debe tener una altura mínima para títulos largos */
+/* Bloque de info: crece según el texto */
 .card-info {
-  flex-grow: 1; 
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Alinea los títulos arriba */
+  justify-content: flex-start; /* Empieza arriba */
   align-items: center;
   width: 100%;
-  min-height: 120px; /* Ajusta según el nombre más largo de tus productos */
+  padding: 8px 0;
 }
 
-/* 2. El bloque de acciones SIEMPRE abajo */
+/* El título ahora puede ocupar las líneas que necesite */
+.card-info h3 { 
+  margin: 4px 0 8px; 
+  font-size: 1.1rem; 
+  line-height: 1.3;
+  font-weight: 600;
+  text-align: center;
+  /* Eliminamos min-height para que no haya espacio vacío si es corto */
+}
+
+/* El "ancla" de alineación: Esto es lo que mantiene los botones nivelados */
 .card-actions {
   width: 100%;
-  margin-top: auto; /* Este es el secreto: empuja todo al fondo */
+  margin-top: auto; /* Empuja este bloque al fondo */
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 90px; /* Espacio reservado para [Selector + Botón] */
+  /* Reservamos el espacio justo para que el botón no suba si falta el selector */
+  min-height: 90px; 
   justify-content: flex-end;
 }
 
-/* 3. El selector de color no debe mover nada */
+/* Aseguramos que el selector no empuje el botón hacia afuera */
 .color-select {
   width: 100%;
-  height: 40px; /* Altura fija para que ocupe el mismo espacio esté o no esté */
-  margin: 0; 
-  box-sizing: border-box;
+  height: 36px;
+  margin-bottom: 2px;
 }
 /* Desactivar zoom en móviles para evitar saltos de pantalla */
 @media (hover: none) {
@@ -474,5 +484,6 @@ button:focus,
     overflow: hidden;
   }
 }
+
 
 
