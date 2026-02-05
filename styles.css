@@ -323,14 +323,6 @@ button:focus,
   padding: 0;
   margin: -1px;
 }
-.carousel { position: relative; width: 100%; height: 200px; overflow: hidden; border-radius: 12px; }
-.carousel-track { display: flex; }
-.carousel-img { min-width: 100%; height: 200px; object-fit: contain; display: none; }
-.carousel-img.active { display: block; }
-.carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: #fff; border: none; font-size: 22px; padding: 6px 10px; cursor: pointer; border-radius: 50%; }
-.carousel-btn.prev { left: 8px; }
-.carousel-btn.next { right: 8px; }
-.carousel-btn:hover { background: rgba(0,0,0,0.6); }
 
 .card {
   display: flex;
@@ -356,15 +348,6 @@ button:focus,
   height: 100%; /* asegura misma altura si usas grid */
   padding: 12px;
   box-sizing: border-box;
-}
-
-/* Bloque de imagen/carrusel */
-.card-image,
-.carousel {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Carrusel track */
@@ -463,22 +446,40 @@ button:focus,
     transform: none !important;
   }
 }
-
-
 /* ===============================
-   Mejora visual del carrusel
+   CARRUSEL
    =============================== */
-
 .carousel {
   position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
 .carousel-track {
-  overflow: hidden;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-img {
+  flex: 0 0 100%;
+  height: 200px;
+  object-fit: contain;
+  display: none;
+}
+
+.carousel-img.active {
+  display: block;
+  margin: 0 auto;
 }
 
 .carousel-btn {
-  background: rgba(0, 0, 0, 0.55);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.55);
   color: #fff;
   border: none;
   font-size: 22px;
@@ -488,9 +489,13 @@ button:focus,
   cursor: pointer;
 }
 
+.carousel-btn.prev { left: 8px; }
+.carousel-btn.next { right: 8px; }
+
 .carousel-btn:hover {
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0,0,0,0.75);
 }
+
 
 
 
