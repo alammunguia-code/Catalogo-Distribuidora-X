@@ -434,18 +434,29 @@ button:focus,
 .carousel-btn.next { right: 8px; }
 
 /* ===================================================
-   INFORMACIÓN Y ACCIONES
+   INFORMACIÓN Y ACCIONES (Corregido para Espejo)
    =================================================== */
 .card-info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Cambiamos center por flex-start para que el título siempre empiece arriba */
+  justify-content: flex-start; 
   align-items: center;
   padding: 10px 0;
+  width: 100%;
 }
 
-.card-info h3 { margin: 8px 0; font-size: 1.15rem; }
+/* Forzamos que el título siempre ocupe el mismo espacio (aprox 2 líneas) */
+.card-info h3 { 
+  margin: 8px 0; 
+  font-size: 1.15rem; 
+  min-height: 2.8rem; 
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
 .card-info .price { color: var(--accent); font-weight: 700; margin-bottom: 6px; }
 .card-info .mayoreo { font-size: 13px; color: #16a34a; margin-bottom: 8px; font-weight: 600; }
 
@@ -455,9 +466,18 @@ button:focus,
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin-top: auto; /* Empuja al fondo de la tarjeta */
+  margin-top: auto; 
+  /* Reservamos espacio para [Selector + Botón] aunque no haya Selector */
+  min-height: 105px; 
+  justify-content: flex-end; /* Empuja los elementos al final de este bloque */
 }
 
+/* Ajuste extra para el selector de color */
+.color-select {
+  width: 100%;
+  height: 38px; /* Altura fija para que no mueva el botón al aparecer */
+  margin-bottom: 4px;
+}
 /* Desactivar zoom en móviles para evitar saltos de pantalla */
 @media (hover: none) {
   .card-image.zoom-active img {
@@ -467,3 +487,4 @@ button:focus,
     overflow: hidden;
   }
 }
+
