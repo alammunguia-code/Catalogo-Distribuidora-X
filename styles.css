@@ -22,9 +22,7 @@ header h1{font-size:2rem;font-weight:700;}
 
 .container{max-width:1280px;margin:32px auto;padding:0 20px}
 
-/***********************
- Barra promo superior
-***********************/
+/* Barra promo superior */
 .promo-bar{
   background:#10b981;
   color:#fff;
@@ -35,50 +33,92 @@ header h1{font-size:2rem;font-weight:700;}
   letter-spacing:.3px;
 }
 
-
-/***********************
- Grid productos
-***********************/
+/* Grid productos */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
 
 .card{
-  text-align: center;
   background:var(--card);
   border-radius:var(--radius);
-  padding:18px;
   box-shadow:var(--shadow);
-  display:flex;flex-direction:column;align-items:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  text-align:center;
+  padding:12px;
+  min-height:450px;
   transition:transform .2s, box-shadow .2s;
+  position:relative;
 }
 .card:hover{
   transform:translateY(-4px);
   box-shadow:0 12px 28px rgba(0,0,0,0.12);
 }
-.card img{  width: 100%;
-  height: 200px;
-  object-fit: contain;
-  background: #f8fafc;
-  border-radius: 12px;}
-.card h3{margin:14px 0 8px;font-size:1.15rem;font-weight:600}
-.price{color:var(--accent);font-weight:700;margin-bottom:12px;font-size:1.1rem}
 
-/***********************
- Promos bajo el precio
-***********************/
-.deal{
-  font-size:.88rem;
-  color:#d97706;
-  font-weight:600;
-  margin-bottom:4px;
+/* Card Image + Carrusel */
+.card-image{
+  position:relative;
+  width:100%;
+  height:220px;
+  overflow:hidden;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f8fafc;
 }
 
-.deal2{
-  font-size:.82rem;
-  color:#7c3aed;
-  font-weight:600;
-  margin-bottom:10px;
+.carousel-track{
+  display:flex;
+  transition:transform 0.3s ease;
+  width:100%;
 }
 
+.carousel-img{
+  min-width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  border:none;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:2;
+}
+.carousel-btn.prev{left:8px}
+.carousel-btn.next{right:8px}
+.carousel-btn:hover{background:rgba(0,0,0,0.75)}
+
+/* Card info */
+.card-info{
+  flex-grow:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  margin:10px 0;
+}
+.card-info h3{margin:8px 0;font-size:1.15rem;font-weight:600;text-align:center}
+.card-info .price{color:var(--accent);font-weight:700;margin-bottom:6px;font-size:1.1rem}
+.card-info .mayoreo{font-size:13px;color:#16a34a;margin-bottom:6px}
+
+/* Card actions */
+.card-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  margin-top:auto;
+}
 .card .btn{
   background:var(--accent);
   color:#fff;
@@ -91,11 +131,23 @@ header h1{font-size:2rem;font-weight:700;}
   width:100%;
 }
 .card .btn:hover{background:var(--accent-dark)}
+.color-select{
+  width:100%;
+  margin-bottom:6px;
+  padding:8px;
+  border-radius:10px;
+  border:1px solid #e6eef0;
+  background:#fff;
+  font-weight:600;
+  color:#111827;
+  box-shadow:0 2px 6px rgba(16,24,40,0.04);
+}
 
+/* Promos bajo el precio */
+.deal{font-size:.88rem;color:#d97706;font-weight:600;margin-bottom:4px}
+.deal2{font-size:.82rem;color:#7c3aed;font-weight:600;margin-bottom:10px}
 
-/***********************
- Icono carrito
-***********************/
+/* Carrito flotante */
 #cart-btn{
   position:fixed;right:24px;bottom:24px;
   background:var(--accent);
@@ -106,12 +158,17 @@ header h1{font-size:2rem;font-weight:700;}
   transition:transform .2s;
 }
 #cart-btn:hover{transform:scale(1.07)}
-#cart-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+#cart-badge{
+  position:absolute;
+  top:-4px;right:-4px;
+  background:#ef4444;color:#fff;
+  width:26px;height:26px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+}
 
-
-/***********************
- Panel lateral carrito
-***********************/
+/* Panel lateral carrito */
 .cart-panel{
   position:fixed;right:0;top:0;height:100vh;width:420px;max-width:95vw;
   background:var(--card);
@@ -123,13 +180,9 @@ header h1{font-size:2rem;font-weight:700;}
 }
 .cart-panel.open{transform:translateX(0)}
 
-.cart-header{
-  padding:20px;
-  border-bottom:1px solid #e5e7eb;
-  display:flex;align-items:center;justify-content:space-between;
-  font-size:1.2rem;font-weight:700;
-}
+.cart-header{padding:20px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;font-size:1.2rem;font-weight:700}
 .cart-body{padding:18px;flex:1;overflow-y:auto}
+.cart-footer{padding:20px;border-top:1px solid #e5e7eb;background:#f8fafc}
 
 .cart-item{
   background:#f9fafb;
@@ -143,6 +196,7 @@ header h1{font-size:2rem;font-weight:700;}
 .qty{width:60px;padding:6px;border-radius:6px;border:1px solid #cbd5e1;text-align:center}
 .small-btn{background:none;border:none;color:var(--muted);cursor:pointer;margin-top:6px;font-size:13px}
 
+/* Overlay */
 .overlay{
   position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);
   opacity:0;visibility:hidden;transition:opacity .25s;
@@ -150,9 +204,7 @@ header h1{font-size:2rem;font-weight:700;}
 }
 .overlay.show{opacity:1;visibility:visible}
 
-.cart-footer{
-  padding:20px;border-top:1px solid #e5e7eb;background:#f8fafc;
-}
+/* Checkout */
 .checkout-form input{
   width:100%;padding:12px;border-radius:10px;border:1px solid #d1d5db;margin-bottom:12px;font-size:1rem;
 }
@@ -161,17 +213,16 @@ header h1{font-size:2rem;font-weight:700;}
 }
 .checkout-btn:hover{background:var(--accent-dark)}
 
-@media(max-width:640px){.cart-panel{width:100vw}}
-
-
+/* Filtros */
 .filters{
   display:flex;
   gap:12px;
   flex-wrap:wrap;
   justify-content:center;
   margin:24px auto;
+  padding:0 12px;
+  max-width:980px;
 }
-
 .filter-btn{
   padding:10px 18px;
   border-radius:999px;
@@ -182,323 +233,41 @@ header h1{font-size:2rem;font-weight:700;}
   color:#374151;
   transition:.2s;
 }
+.filter-btn:hover{background:#f1f5f9}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-.filter-btn:hover{
-  background:#f1f5f9;
-}
+/* Buscador */
+.search-bar{max-width:720px;margin:18px auto;padding:0 12px}
+.search-input-wrap{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:12px;padding:8px 10px;box-shadow:0 6px 18px rgba(16,24,40,0.06);border:1px solid rgba(16,24,40,0.04);transition:box-shadow .18s ease,border-color .18s ease,transform .12s ease}
+.search-input-wrap:focus-within{box-shadow:0 10px 30px rgba(16,24,40,0.10);border-color:rgba(13,148,136,0.18);transform:translateY(-1px)}
+.search-icon{font-size:18px;color:var(--muted);margin-left:4px}
+#search{flex:1 1 auto;border:none;outline:none;background:transparent;font-size:15px;color:inherit;padding:6px 4px}
+.clear-btn{background:transparent;border:none;color:var(--muted);font-size:16px;padding:6px;border-radius:8px;cursor:pointer}
+.clear-btn:hover{background:rgba(0,0,0,0.04)}
 
-.filter-btn.active{
-  background:var(--accent);
-  color:#fff;
-  border-color:var(--accent);
-}
-
-/* Wrapper del buscador */
-.search-bar {
-  max-width: 720px;
-  margin: 18px auto;
-  padding: 0 12px;
-}
-
-/* Contenedor del input con icono y botón limpiar */
-.search-input-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--card);
-  border-radius: 12px;
-  padding: 8px 10px;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-  border: 1px solid rgba(16,24,40,0.04);
-  transition: box-shadow .18s ease, border-color .18s ease, transform .12s ease;
-}
-
-/* Efecto focus del wrapper */
-.search-input-wrap:focus-within {
-  box-shadow: 0 10px 30px rgba(16,24,40,0.10);
-  border-color: rgba(13,148,136,0.18);
-  transform: translateY(-1px);
-}
-
-/* Icono dentro del buscador */
-.search-icon {
-  font-size: 18px;
-  color: var(--muted);
-  margin-left: 4px;
-}
-
-/* Input principal */
-#search {
-  flex: 1 1 auto;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
-  color: inherit;
-  padding: 6px 4px;
-}
-
-/* Botón limpiar */
-.clear-btn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 16px;
-  padding: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.clear-btn:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-/* Enfoque visible para accesibilidad en todos los botones interactivos */
-button:focus,
-.filter-btn:focus,
-.card .btn:focus,
-.small-btn:focus,
-.checkout-btn:focus {
-  outline: 3px solid rgba(13,148,136,0.14);
-  outline-offset: 3px;
-  border-radius: 10px;
-}
-
-/* Selector de color dentro de la tarjeta */
-.color-select {
-  width: 100%;
-  margin: 8px 0 12px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid #e6eef0;
-  background: #fff;
-  font-weight: 600;
-  color: #111827;
-  box-shadow: 0 2px 6px rgba(16,24,40,0.04);
-}
-
-/* Evitar salto de layout en tarjetas */
-.card {
-  min-height: 420px;
-  justify-content: flex-start;
-  gap: 8px;
-}
-
-/* Placeholder visual para imágenes vacías */
-.card img[alt=""] {
-  background: linear-gradient(90deg, #f8fafc, #eef2f5);
-}
-
-/* Ajustes tipográficos para móviles */
-@media (max-width: 520px) {
-  header h1 { font-size: 1.4rem; }
-  .card h3 { font-size: 1rem; }
-  .price { font-size: 1rem; }
-  .search-bar { margin: 12px auto; padding: 0 10px; }
-}
-
-/* Mejor distribución de filtros en pantallas pequeñas */
-.filters {
-  padding: 0 12px;
-  max-width: 980px;
-  margin: 18px auto;
-}
-
-/* Transiciones suaves en botones de filtro */
-.filter-btn {
-  transition: background .18s, transform .12s;
-}
-.filter-btn:active {
-  transform: translateY(1px);
-}
-
-/* Utilidad para labels accesibles ocultos */
-.visually-hidden {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
-  border: 0;
-  padding: 0;
-  margin: -1px;
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.card-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-}
-/* Contenedor general de la tarjeta */
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* reparte espacio vertical */
-  align-items: center;
-  text-align: center;
-  height: 100%; /* asegura misma altura si usas grid */
-  padding: 12px;
-  box-sizing: border-box;
-}
-
-/* Carrusel track */
-.carousel-track {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-/* Imágenes del carrusel */
-.carousel-img {
-  min-width: 100%;
-  height: 200px;
-  object-fit: contain;
-  display: none;
-}
-.carousel-img.active {
-  display: block;
-  margin: 0 auto;
-}
-
-/* Botones del carrusel */
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.4);
-  color: #fff;
-  border: none;
-  font-size: 22px;
-  padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-.carousel-btn.prev { left: 8px; }
-.carousel-btn.next { right: 8px; }
-.carousel-btn:hover { background: rgba(0,0,0,0.6); }
-
-/* Bloque de información */
-.card-info {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.card-info h3 { margin: 8px 0; }
-.card-info .price { font-weight: bold; margin-bottom: 6px; }
-.card-info .mayoreo { font-size: 13px; color: #16a34a; margin-bottom: 8px; }
-
-/* Bloque de acciones (selector + botón) */
-.card-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: auto; /* empuja al fondo */
-}
-/* ===============================
-   ZOOM DINÁMICO CON CURSOR
-   =============================== */
-
-/* Ajustar imágenes para que siempre se vean completas */
+/* Zoom dinámico */
 .card-image img,
-.card-image .carousel-img {
-  display: block;
-  margin: 0 auto;             
-  max-width: 100%;
-  max-height: 200px;          
-  object-fit: contain;         
-  transition: transform 0.25s ease, transform-origin 0.25s ease;
-  cursor: zoom-in;
+.card-image .carousel-img{
+  transition:transform .25s ease,transform-origin .25s ease;
+  cursor:zoom-in;
 }
-
-/* Centrar y alinear correctamente el texto */
-.card-info {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;        
-  text-align: center;
-}
-
-/* Zoom activo */
 .card-image.zoom-active img,
-.card-image.zoom-active .carousel-img.active {
-  transform: scale(1.8);
+.card-image.zoom-active .carousel-img.active{
+  transform:scale(1.8);
 }
-
-/* Evitar problemas en móvil */
-@media (hover: none) {
+@media(hover:none){
   .card-image img,
-  .card-image .carousel-img {
-    transform: none !important;
-  }
-}
-/* ===============================
-   CARRUSEL
-   =============================== */
-.card-image {
-  position: relative;
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
+  .card-image .carousel-img{transform:none !important}
 }
 
-/* Track de imágenes */
-.carousel-track {
-  display: flex;
-  transition: transform 0.3s ease;
-  width: 100%;
+/* Responsive */
+@media(max-width:640px){.cart-panel{width:100vw}}
+@media(max-width:520px){
+  header h1{font-size:1.4rem}
+  .card h3{font-size:1rem}
+  .price{font-size:1rem}
+  .search-bar{margin:12px auto;padding:0 10px}
 }
-
-/* Imágenes del carrusel */
-.carousel-img {
-  min-width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-/* Imagen activa para zoom */
-.carousel-img.active {
-  display: block;
-}
-
-/* Botones del carrusel */
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.55);
-  color: #fff;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 2;
-}
-.carousel-btn.prev { left: 8px; }
-.carousel-btn.next { right: 8px; }
-.carousel-btn:hover { background: rgba(0,0,0,0.75); }
-
 
 
 
