@@ -428,8 +428,9 @@ button:focus, .filter-btn:focus, .card .btn:focus, .small-btn:focus, .checkout-b
 }
 
 /* =============================== ZOOM DINÁMICO =============================== */
-.card-image img,
-.card-image .carousel-img {
+/* =============================== ZOOM DINÁMICO =============================== */
+/* Solo aplica zoom a la primera imagen normal de la tarjeta */
+.card-image > img:first-child {
   display: block;
   margin: 0 auto;
   max-width: 100%;
@@ -439,17 +440,21 @@ button:focus, .filter-btn:focus, .card .btn:focus, .small-btn:focus, .checkout-b
   cursor: zoom-in;
 }
 
-.card-image.zoom-active img,
-.card-image.zoom-active .carousel-img.active {
+.card-image.zoom-active > img:first-child {
   transform: scale(1.8);
 }
 
-@media (hover: none) {
-  .card-image img,
-  .card-image .carousel-img {
-    transform: none !important;
-  }
+/* Desactiva zoom en imágenes del carrusel */
+.card-image .carousel-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  cursor: default;         /* sin zoom */
+  transition: none;        /* sin animación */
 }
+
 
 /* =============================== CARRUSEL =============================== */
 .card-image {
@@ -509,6 +514,7 @@ button:focus, .filter-btn:focus, .card .btn:focus, .small-btn:focus, .checkout-b
 .carousel-btn:hover {
   background: rgba(0,0,0,0.75);
 }
+
 
 
 
