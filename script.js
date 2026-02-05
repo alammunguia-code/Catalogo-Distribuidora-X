@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /****************************************************
    * ELEMENTOS DEL DOM
    ****************************************************/
+
   const catalogoEl = document.getElementById('catalogo');
   const cartBtn = document.getElementById('cart-btn');
   const cartBadge = document.getElementById('cart-badge');
@@ -62,7 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartBody = document.getElementById('cart-body');
   const cartTotalEl = document.getElementById('cart-total');
   const closeCart = document.getElementById('close-cart');
-  const submitBtn = document.getElementById('submit-order');
+  const submitBtn = document.getElementById('submit-order'); 
+  const nombreEl = document.getElementById('nombre');
+  const telefonoEl = document.getElementById('telefono');
+  const direccionEl = document.getElementById('direccion');
+  const emailEl = document.getElementById('email');
+
   const searchInput = document.getElementById('search');
   let activeCategory = 'todos';
   let lastSearch = '';
@@ -418,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
 
 }); 
+
 
 
 
