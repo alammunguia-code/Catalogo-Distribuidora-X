@@ -220,6 +220,29 @@ document.addEventListener('DOMContentLoaded', () => {
     imgs[current].style.transformOrigin = 'center center';
 
   });
+  
+  function initCarousels() {
+  document.querySelectorAll('.carousel').forEach(carousel => {
+    const imgs = carousel.querySelectorAll('.carousel-img');
+    let current = 0;
+
+    function showImage(index) {
+      imgs.forEach(img => img.classList.remove('active'));
+      imgs[index].classList.add('active');
+    }
+
+    carousel.querySelector('.carousel-btn.prev')?.addEventListener('click', () => {
+      current = (current - 1 + imgs.length) % imgs.length;
+      showImage(current);
+    });
+
+    carousel.querySelector('.carousel-btn.next')?.addEventListener('click', () => {
+      current = (current + 1) % imgs.length;
+      showImage(current);
+    });
+  });
+}
+
 
   /****************************************************
    * FILTROS
@@ -241,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderProductos(filtrados);
+    initCarousels();
   }
 
   if (searchInput) {
@@ -434,5 +458,6 @@ document.addEventListener('mouseout', (e) => {
     img.style.transformOrigin = 'center center';
   }
 });
+
 
 
