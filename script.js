@@ -201,32 +201,78 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /****************************************************
-   * CARRUSEL FUNCIONAL
-   ****************************************************/
-  function initCarousel(carousel) {
-    const track = carousel.querySelector('.carousel-track');
-    const slides = Array.from(track.children);
-    const prevBtn = carousel.querySelector('.carousel-btn.prev');
-    const nextBtn = carousel.querySelector('.carousel-btn.next');
-    let index = 0;
+ * CARRUSEL + ZOOM CORREGIDO
+ ****************************************************/
+document.querySelectorAll('.card').forEach(card => {
+  const carousel = card.querySelector('.carousel');
+  const cardImage = card.querySelector('.card-image');
 
-    function updateSlide() {
-      track.style.transform = `translateX(-${index * 100}%)`;
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-    }
+  if (!cardImage) return;
 
-    prevBtn.addEventListener('click', () => {
-      index = (index - 1 + slides.length) % slides.length;
-      updateSlide();
+  // Zoom dinámico que sigue al cursor
+  cardImage.addEventListener('mousemove', e => {
+    if (!cardImage.classList.contains('zoom-active')) return;
+
+    const img =
+      cardImage.querySelector('.carousel-img.active') ||
+      cardImage.querySelector('img');
+
+    if (!img) return;
+
+    const rect = cardImage.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    img.style.transformOrigin = `${x}% ${y}%`;
+  });
+
+  cardImage.addEventListener('mouseover', e => {
+    cardImage.classList.add('zoom-active');
+  });
+
+  cardImage.addEventListener('mouseout', e => {
+    cardImage.classList.remove('zoom-active');
+
+    const img =
+      cardImage.querySelector('.carousel-img.active') ||
+      cardImage.querySelector('img');
+
+    if (img) img.style.transformOrigin = 'center center';
+  });
+
+  // Inicializar carrusel si tiene más de una imagen
+  if (!carousel) return;
+
+  const track = carousel.querySelector('.carousel-track');
+  const slides = Array.from(track.children);
+  const prevBtn = carousel.querySelector('.carousel-btn.prev');
+  const nextBtn = carousel.querySelector('.carousel-btn.next');
+  let index = 0;
+
+  function updateSlide() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+      // Reset zoom de slides no activos
+      if (i !== index) slide.style.transform = '';
     });
-
-    nextBtn.addEventListener('click', () => {
-      index = (index + 1) % slides.length;
-      updateSlide();
-    });
-
-    updateSlide();
   }
+
+  prevBtn.addEventListener('click', () => {
+    index = (index - 1 + slides.length) % slides.length;
+    updateSlide();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    index = (index + 1) % slides.length;
+    updateSlide();
+  });
+
+  // Inicia con la primera imagen
+  updateSlide();
+});
+
+
 
   /****************************************************
    * FILTROS
@@ -392,42 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => alert('Error al enviar pedido'));
   });
 
-  /****************************************************
-   * ZOOM DINÁMICO CON CURSOR
-   ****************************************************/
-  document.addEventListener('mousemove', e => {
-    const cardImage = e.target.closest('.card-image.zoom-active');
-    if (!cardImage) return;
-
-    const img =
-      cardImage.querySelector('.carousel-img.active') ||
-      cardImage.querySelector('img');
-
-    if (!img) return;
-
-    const rect = cardImage.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    img.style.transformOrigin = `${x}% ${y}%`;
-  });
-
-  document.addEventListener('mouseover', e => {
-    const cardImage = e.target.closest('.card-image');
-    if (!cardImage) return;
-    cardImage.classList.add('zoom-active');
-  });
-
-  document.addEventListener('mouseout', e => {
-    const cardImage = e.target.closest('.card-image');
-    if (!cardImage) return;
-    cardImage.classList.remove('zoom-active');
-
-    const img =
-      cardImage.querySelector('.carousel-img.active') ||
-      cardImage.querySelector('img');
-
-    if (img) img.style.transformOrigin = 'center center';
-  });
 
   /****************************************************
    * INIT
@@ -435,6 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   cargarProductos();
 });
+
 
 
 
