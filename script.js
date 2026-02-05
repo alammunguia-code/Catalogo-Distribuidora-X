@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const y = ((e.clientY - rect.top) / rect.height) * 100;
 
       img.style.transformOrigin = `${x}% ${y}%`;
-      img.style.transform = 'scale(1.8)';
+      img.style.transform = 'scale(2.5)';
   });
 
   document.addEventListener('mouseover', e => {
@@ -418,6 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
 
 }); 
+
 
 
 
