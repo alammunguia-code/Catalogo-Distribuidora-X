@@ -19,7 +19,9 @@ const ENTRY = {
   total: 'entry.1238815983',
   precioUnitario: 'entry.1479326422',
   subtotal: 'entry.1763806759',
-  cantidades: 'entry.1766881644'
+  cantidades: 'entry.1766881644',
+  subtotalGral: 'entry.754110975',
+  ivaGral: 'entry.1757476799'
   
 };
 
@@ -286,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       cartBody.appendChild(node);
     });
+    const subtotalGral = total / 1.16;
+    const ivaGral = total - subtotalGral;
 
     cartTotalEl.textContent = total.toFixed(2);
     updateBadge();
@@ -387,6 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fd.append(ENTRY.precioUnitario, precioUnitarioTexto);
     fd.append(ENTRY.subtotal, subtotalTexto);
     fd.append(ENTRY.total, cartTotalEl.textContent);
+    fd.append(ENTRY.subtotalGral, neto);
+    fd.append(ENTRY.ivaGral, impuesto);
 
     fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
       .then(() => {
@@ -447,6 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarProductos();
 
 }); 
+
 
 
 
